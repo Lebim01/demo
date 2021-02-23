@@ -12,7 +12,6 @@ import {
   CInput,
   CAlert
 } from '@coreui/react'
-import { useSelector } from 'react-redux'
 import moment from 'moment'
 
 const round = (number) => {
@@ -26,12 +25,10 @@ const Tables = (props) => {
     const [error, setError] = useState('')
     const [result, setResult] = useState([])
 
-    const plans = useSelector(state => state.plans.plans)
-    const _getPlan = useSelector(state => {
-        return (uuid) => {
-            return state.plans.plans.find(p => p.uuid === uuid)
-        }
-    })
+    const plans = []
+    const _getPlan = () => {
+
+    }
 
     const change = save => e => {
         save(e.target.value)

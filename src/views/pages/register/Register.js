@@ -14,8 +14,6 @@ import {
   CAlert
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { addUser } from 'src/redux/actions/users'
-import { useDispatch, useSelector } from 'react-redux'
 
 const Register = (props) => {
   const [error, setError] = useState('')
@@ -23,21 +21,9 @@ const Register = (props) => {
   const [password, setPassword] = useState('')
   const [repeatPassword, setRepeatPassword] = useState('')
 
-  const dispatch = useDispatch()
-
-  const _addUser = useSelector(state => {
-    return (username, password) => {
-      let exists = state.users.users.find(u => u.username === username)
-      if(exists)
-        return false;
-
-      dispatch(addUser({
-        username,
-        password
-      }))
-      return true;
-    }
-  })
+  const _addUser = () => {
+    
+  }
 
   const change = (e, save) => {
     save(e.target.value)

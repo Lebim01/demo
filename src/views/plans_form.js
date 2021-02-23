@@ -12,8 +12,6 @@ import {
   CCardFooter,
   CAlert
 } from '@coreui/react'
-import { useDispatch, useSelector } from 'react-redux'
-import { addPlan, updatePlan } from 'src/redux/actions/plans'
 
 const Form = (props) => {
     const [uuid] = useState(props.match.params.uuid)
@@ -25,12 +23,10 @@ const Form = (props) => {
         tax: 0,
         duration: 0
     })
-    const dispatch = useDispatch()
-    const _getPlan = useSelector(state => {
-        return (uuid) => {
-            return state.plans.plans.find(p => p.uuid === uuid)
-        }
-    })
+    
+    const _getPlan = () => {
+
+    }
 
     useEffect(() => {
         if(uuid){
@@ -58,11 +54,13 @@ const Form = (props) => {
             if(!data.tax > 0) throw Error('La tasa mensual no puede ser vacia o cero')
             if(!data.duration > 0) throw Error('El duración no puede ser vacia o cero')
 
-            if(data.uuid)
-                dispatch(updatePlan(data.uuid, data))
-            else
-                dispatch(addPlan(data))
+            if(data.uuid){
 
+            }
+            else{
+
+            }
+                
             cancel()
         }catch(err){
             setError(err.toString())

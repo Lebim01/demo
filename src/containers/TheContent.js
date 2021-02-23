@@ -8,6 +8,29 @@ import { CContainer, CFade } from '@coreui/react'
 
 // routes config
 import routes from '../routes'
+import { useAuth } from 'src/context/auth'
+
+function PrivateRoute({ children, ...rest }) {
+  let auth = useAuth();
+
+  return (
+    <Route
+      {...rest}
+      render={({ location }) =>
+        auth.user ? (
+          children
+        ) : (
+          <Redirect
+            to={{
+              pathname: "/login",
+              state: { from: location }
+            }}
+          />
+        )
+      }
+    />
+  );
+}
   
 const loading = (
   <div className="pt-3 text-center">
@@ -22,20 +45,38 @@ const TheContent = () => {
         <Suspense fallback={loading}>
           <Switch>
             {routes.map((route, idx) => {
-              return route.component && (
-                <Route
-                  key={idx}
-                  path={route.path}
-                  exact={route.exact}
-                  name={route.name}
-                  render={props => (
-                    <CFade>
-                      <route.component {...props} />
-                    </CFade>
-                  )} />
-              )
+              if(route.component){
+                if(route.private){
+                  return (
+                    <PrivateRoute 
+                      key={idx}
+                      path={route.path}
+                      exact={route.exact}
+                      name={route.name}
+                    >
+                      <CFade>
+                        <route.component />
+                      </CFade>
+                    </PrivateRoute>
+                  )
+                }
+
+                return (
+                  <Route
+                    key={idx}
+                    path={route.path}
+                    exact={route.exact}
+                    name={route.name}
+                    render={props => (
+                      <CFade>
+                        <route.component {...props} />
+                      </CFade>
+                    )} />
+                )
+              }
+              return null
             })}
-            <Redirect from="/" to="/dashboard" />
+            <Redirect from="/" to="/login" />
           </Switch>
         </Suspense>
       </CContainer>

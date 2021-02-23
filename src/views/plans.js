@@ -8,14 +8,11 @@ import {
   CRow,
   CButton
 } from '@coreui/react'
-import { useDispatch, useSelector } from 'react-redux'
-import { removePlan } from 'src/redux/actions/plans'
 
 const fields = ['name', 'inv_min', 'inv_max', 'tax', 'duration', 'actions']
 
 const Tables = (props) => {
-    const dispatch = useDispatch()
-    const plans = useSelector(state => state.plans.plans)
+    const plans = []
 
     const goToAdd = () => {
         props.history.push('/plans/form/')
@@ -26,7 +23,7 @@ const Tables = (props) => {
     }
 
     const remove = (uuid) => {
-        dispatch(removePlan(uuid))
+        
     }
 
     return (

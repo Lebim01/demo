@@ -16,34 +16,21 @@ import {
   CAlert
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { useSelector, useDispatch } from 'react-redux'
-import { login } from 'src/redux/actions/users'
+import { useAuth } from 'src/context/auth'
 
 const Login = (props) => {
   const [error, setError] = useState('')
   const [message, setMessage] = useState((new URLSearchParams(props.location.search)).get('message'))
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const dispatch = useDispatch()
-
-  const _login = useSelector(state => {
-    return (username, password) => {
-      const user = state.users.users.find(u => u.username === username && u.password === password)
-      if(user){
-        return user
-      }
-      
-      return false
-    }
-  })
+  const auth = useAuth()
 
   const onLogin = () => {
     setMessage('')
     setError('')
 
-    const user = _login(username, password)
-    if(user){
-      dispatch(login(user))
+    const login = auth.login(username, password)
+    if(login){
       props.history.push('/plans')
     }else{
       setError('Usuario y/o contraseña invalidas')
