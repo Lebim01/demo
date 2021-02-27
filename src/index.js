@@ -9,13 +9,24 @@ import * as serviceWorker from './serviceWorker';
 
 import { icons } from './assets/icons'
 import { ProvideAuth } from './context/auth'
+import { Provider } from 'react-redux'
+import store, { persistor } from './store'
+import { PersistGate } from 'redux-persist/integration/react'
+
+import axios from 'axios'
+
+axios.defaults.baseURL = 'http://localhost:4004/'
 
 React.icons = icons
 
 ReactDOM.render(
-  <ProvideAuth>
-    <App/>
-  </ProvideAuth>,
+  <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor}>
+      <ProvideAuth>
+        <App/>
+      </ProvideAuth>
+    </PersistGate>
+  </Provider>,
   document.getElementById('root')
 );
 

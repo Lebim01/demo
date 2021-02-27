@@ -12,6 +12,7 @@ import {
   CCardFooter,
   CAlert
 } from '@coreui/react'
+import { CREATE_PLAN, GET_PLAN, UPDATE_PLAN } from 'src/api/plans'
 
 const Form = (props) => {
     const [uuid] = useState(props.match.params.uuid)
@@ -24,8 +25,11 @@ const Form = (props) => {
         duration: 0
     })
     
-    const _getPlan = () => {
-
+    const _getPlan = async () => {
+        const res = await GET_PLAN(uuid)
+        setData({
+            ...res.data
+        })
     }
 
     useEffect(() => {
@@ -43,7 +47,7 @@ const Form = (props) => {
         }))
     }
 
-    const save = () => {
+    const save = async () => {
         try {
             setError('')
 
@@ -55,10 +59,10 @@ const Form = (props) => {
             if(!data.duration > 0) throw Error('El duración no puede ser vacia o cero')
 
             if(data.uuid){
-
+                await UPDATE_PLAN(data.uuid, data)
             }
             else{
-
+                await CREATE_PLAN(data)
             }
                 
             cancel()

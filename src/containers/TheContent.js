@@ -16,9 +16,9 @@ function PrivateRoute({ children, ...rest }) {
   return (
     <Route
       {...rest}
-      render={({ location }) =>
+      render={({ location, ...props }) =>
         auth.user ? (
-          children
+          <props.component {...props} location={location} />
         ) : (
           <Redirect
             to={{
@@ -53,10 +53,13 @@ const TheContent = () => {
                       path={route.path}
                       exact={route.exact}
                       name={route.name}
+                      component={(props) => (
+                        <CFade>
+                          <route.component {...props} />
+                        </CFade>
+                      )}
                     >
-                      <CFade>
-                        <route.component />
-                      </CFade>
+                      
                     </PrivateRoute>
                   )
                 }

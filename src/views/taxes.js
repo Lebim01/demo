@@ -12,11 +12,8 @@ import {
   CInput,
   CAlert
 } from '@coreui/react'
-import moment from 'moment'
-
-const round = (number) => {
-    return Math.round(number * 100) / 100
-}
+import { useEffect } from 'react'
+import { GET_PLANS, REPORT_PLAN } from 'src/api/plans'
 
 const Tables = (props) => {
     const [plan, setPlan] = useState('')
@@ -24,52 +21,30 @@ const Tables = (props) => {
     const [date, setDate] = useState('')
     const [error, setError] = useState('')
     const [result, setResult] = useState([])
+    const [plans, setPlans] = useState([])
 
-    const plans = []
-    const _getPlan = () => {
+    useEffect(() => {
+        getPlans()
+    }, [])
 
+    const getPlans = async () => {
+        const res = await GET_PLANS()
+        setPlans(res.data)
     }
 
     const change = save => e => {
         save(e.target.value)
     }
 
-    const calculate = () => {
+    const calculate = async () => {
         try {
             setError('')
             if(!plan) throw Error('Seleccione un plan')
             if(!amount > 0) throw Error('El monto debe ser mayor a 0')
             if(!date) throw Error('Seleccione un fecha')
 
-            const _plan = _getPlan(plan)
-            
-            let _result = []
-            let _amount = Number(amount)
-            let _date = moment(date)
-
-            for(let i = 1; i < Number(_plan.duration); i++){
-                const performance = round(_amount * (Number(_plan.tax) / 100))
-                _result.push({
-                    name: i === 1
-                        ? _plan.name
-                        : '',
-                    date: _date.format("YYYY/MM/DD"),
-                    tax: `${_plan.tax}%`,
-                    init_amount: _amount,
-                    performance
-                })
-                _amount = round(_amount + performance)
-                _date = _date.add(1, 'month')
-            }
-
-            _result.push({
-                name: 'TOTAL, FINAL',
-                date: _date.format("YYYY/MM/DD"),
-                tax: `${_plan.tax}%`,
-                init_amount: _amount,
-            })
-
-            setResult(_result)
+            const res = await REPORT_PLAN(plan, { init_date: date, amount })
+            setResult(res.data)
         }catch(err){
             setError(err.toString())
         }

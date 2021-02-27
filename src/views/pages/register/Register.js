@@ -14,6 +14,7 @@ import {
   CAlert
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
+import { REGISTER } from 'src/api/auth'
 
 const Register = (props) => {
   const [error, setError] = useState('')
@@ -21,8 +22,18 @@ const Register = (props) => {
   const [password, setPassword] = useState('')
   const [repeatPassword, setRepeatPassword] = useState('')
 
-  const _addUser = () => {
-    
+  const _addUser = async () => {
+    try {
+      setError('')
+      await REGISTER({
+        username,
+        password
+      })
+      return true
+    }catch(err){
+      setError(err.response.data)
+    }
+    return false
   }
 
   const change = (e, save) => {
@@ -37,10 +48,8 @@ const Register = (props) => {
       if(!password) throw Error('Favor de llenar el campo Password')
       if(password !== repeatPassword) throw Error('Las conatraseñas no coinciden')
 
-      if(_addUser(username, password)){
+      if(_addUser()){
         props.history.push('/login?message=Usuario registrado')
-      }else{
-        throw Error('Este usuario ya existe')
       }
     }catch(err){
       setError(err.toString())

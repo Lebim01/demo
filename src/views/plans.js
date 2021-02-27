@@ -8,22 +8,35 @@ import {
   CRow,
   CButton
 } from '@coreui/react'
+import { GET_PLANS, DELETE_PLAN } from 'src/api/plans'
+import { useEffect } from 'react'
+import { useState } from 'react'
 
 const fields = ['name', 'inv_min', 'inv_max', 'tax', 'duration', 'actions']
 
 const Tables = (props) => {
-    const plans = []
+    const [ plans, setPlans ] = useState([])
+
+    useEffect(() => {
+        getPlans()
+    }, [])
+
+    const getPlans = async () => {
+        const res = await GET_PLANS()
+        setPlans(res.data)
+    }
 
     const goToAdd = () => {
         props.history.push('/plans/form/')
     }
 
-    const edit = (uuid) => {
-        props.history.push('/plans/form/'+uuid)
+    const edit = (item) => {
+        props.history.push('/plans/form/'+item.uuid)
     }
 
-    const remove = (uuid) => {
-        
+    const remove = async (item) => {
+        await DELETE_PLAN(item.uuid)
+        getPlans()
     }
 
     return (
@@ -54,11 +67,11 @@ const Tables = (props) => {
                                     'actions':
                                         (item) => (
                                             <td>
-                                                <CButton color="info" onClick={() => edit(item.uuid)}>
+                                                <CButton color="info" onClick={() => edit(item)}>
                                                     Editar
                                                 </CButton>
                                                 {' '}
-                                                <CButton color="danger" onClick={() => remove(item.uuid)}>
+                                                <CButton color="danger" onClick={() => remove(item)}>
                                                     Eliminar
                                                 </CButton>
                                             </td>

@@ -17,24 +17,21 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { useAuth } from 'src/context/auth'
+import { useEffect } from 'react'
 
 const Login = (props) => {
-  const [error, setError] = useState('')
   const [message, setMessage] = useState((new URLSearchParams(props.location.search)).get('message'))
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const auth = useAuth()
+  const { login, error, user } = useAuth()
 
-  const onLogin = () => {
-    setMessage('')
-    setError('')
+  useEffect(() => {
+    if(user) props.history.push('/plans')
+  }, [user])
 
-    const login = auth.login(username, password)
-    if(login){
-      props.history.push('/plans')
-    }else{
-      setError('Usuario y/o contraseña invalidas')
-    }
+  const onLogin = (e) => {
+    e.preventDefault()
+    login(username, password)
   }
 
   const change = (e, save) => {
